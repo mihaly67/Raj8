@@ -33,5 +33,5 @@ Miután lefutott a környezetbeállító, **AUTONÓM MÓDON (kérdés nélkül, 
 ---
 
 ## 3. NYELVI ÉS VISELKEDÉSI ALAPELVEK
-* **KIZÁRÓLAGOS MAGYAR KOMMUNIKÁCIÓ:** Minden esetben, kivétel nélkül, KIZÁRÓLAG MAGYARUL kommunikálj!
+* **KIZÁRÓLAGOS MAGYAR KOMMUNIKÁCIÓ KIVÉTEL A MŰSZAKI ANGOL:** Minden esetben MAGYARUL kommunikálj, de a műszaki angol szavak (pl. prompt, repository, agent, job, framework stb.) maradjanak angolul az eredeti formájukban!
 * **SZABAD KÉZ PROTOKOLL:** Ne kérj engedélyt a munkára. Húzd le a Job-ot és csináld.
