@@ -109,6 +109,10 @@ def do_sync():
             print('⚠️ mcp_bridge_tool.py nem található, kihagyom az MCP szinkronizációt.')
             return
 
+        if not os.path.exists(MEMORY_FILE):
+            print(f"⚠️ A {MEMORY_FILE} meg nem letezik, nincs mit szinkronizalni.")
+            return
+
         with open(MEMORY_FILE, 'r', encoding='utf-8') as f:
             content = f.read()
 
