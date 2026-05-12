@@ -29,15 +29,19 @@ python3 tools/skills/mcp_bridge_tool.py execute_bash "<parancs>"
 * **KIZÁRÓLAGOS MAGYAR KOMMUNIKÁCIÓ KIVÉTEL A MŰSZAKI ANGOL:** Minden esetben MAGYARUL kommunikálj, de a műszaki angol szavak (pl. prompt, repository, agent, job, framework stb.) maradjanak angolul az eredeti formájukban!
 * **SZABAD KÉZ PROTOKOLL:** Ne kérj engedélyt a munkára. Húzd le a Job-ot és csináld.
 
+## 4. DINAMIKUS RAJPARANCSNOKSÁG ÉS KÖZPONTOSÍTÁS
+A mindenkori Fő Agent szerepe dinamikus. Jelenleg Jules_mx a Rajparancsnok, de más Fő Agentek (pl. Restauráló Jules, EA Jules, Videodownloader Jules) is átvehetik az irányítást. Bárki is a parancsnok, a **központi kommunikációs csatorna** (az inbox és outbox mappák) **mindig Jules_mx szerverkönyvtárában** (`/home/misi/Jules_mx/`) található.
+
 ## 5. SWARM FÁJL-ALAPÚ KOMMUNIKÁCIÓS PROTOKOLL (AZ "INBOX" SZABÁLY)
 Mivel az automatizált UI navigáció és a háttérben futó Watcher démonok instabilak és drágák erőforrásban, a Raj (Swarm) kommunikációja a VPS **fájlrendszerén keresztül** történik, a Karmester (a felhasználó) irányításával. A Karmester működik "emberi API"-ként (Trigger).
 
-**A Mappastruktúra a VPS-en:**
+**A Mappastruktúra a VPS-en (A Jules_mx repóban hosztolva):**
 *   **Inbox (Bejövő feladatok a rajtagoknak):** `/home/misi/Jules_mx/temp/inbox/`
-*   **Outbox (Kimenő válaszok Jules_mx-nek):** `/home/misi/Jules_mx/temp/outbox/`
+*   **Outbox (Kimenő válaszok a Rajparancsnoknak):** `/home/misi/Jules_mx/temp/outbox/`
 
 **A protokoll menete (Bármelyik Agent számára kötelező):**
-1.  **Az "inbox" varázsszó:** Ha a Karmester beírja a chatbe az **"inbox"** szót, neked (mint Agentnek) azonnal tudnod kell, hogy új üzeneted vagy feladatod érkezett a VPS-ről.
-2.  **Olvasás:** Azonnal használd a VPS MCP szervert (vagy ssh-t), és listázd ki a megfelelő mappát (ha rajtag vagy, az `inbox`-ot, ha Fő Agent Jules_mx vagy, az `outbox`-ot).
-3.  **Végrehajtás:** Olvasd el a neked címzett (általában `.txt` vagy `.md`) fájlt, és tekintsd azt úgy, mintha maga a Karmester adta volna az utasítást. Ez lehet egy részletes, hosszú kontextus egy másik AI-tól.
-4.  **Válaszadás (Rajtagoknak):** Amikor elkészültél a kért feladattal, írj egy részletes válasz fájlt az `outbox` mappába (pl. `valasz_raj[számod]_tol_julesnek.md`). Ezt követően jelezd a Karmesternek a chatben, hogy a fájl kész. Ő majd átmegy a Fő Agent ablakába, és ott is kiadja az "inbox" parancsot az ébresztéshez.
+1.  **A Saját Memória Vezetése:** Mindenki szigorúan a saját memóriáját (`agent_memory.jsonl`) írja. Az időzóna szigorúan **Budapest (Közép-Európa)**, és a dátum évszáma **2026**.
+2.  **Az "inbox" varázsszó:** Ha a Karmester beírja a chatbe az **"inbox"** szót, neked (mint Agentnek) azonnal tudnod kell, hogy új üzeneted vagy feladatod érkezett a VPS-ről.
+3.  **Olvasás:** Azonnal használd a VPS MCP szervert (vagy ssh-t), és listázd ki a megfelelő mappát (ha rajtag vagy, az `inbox`-ot, ha Fő Agent, az `outbox`-ot).
+4.  **Végrehajtás:** Olvasd el a neked címzett fájlt, és tekintsd azt úgy, mintha maga a Karmester adta volna az utasítást.
+5.  **Válaszadás (Rajtagoknak):** Amikor elkészültél a kért feladattal, írj egy részletes válasz fájlt az `outbox` mappába (pl. `valasz_raj[számod]_tol.md`). Ezt követően jelezd a Karmesternek a chatben, hogy a fájl kész.

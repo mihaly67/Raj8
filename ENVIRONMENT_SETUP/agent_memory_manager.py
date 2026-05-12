@@ -4,6 +4,7 @@ import json
 import argparse
 import datetime
 import subprocess
+from zoneinfo import ZoneInfo
 
 # Kiderítjük, hogy melyik repóban futunk
 repo_name = os.path.basename(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -18,8 +19,14 @@ def init_memory_file():
 
 def write_memory(category: str, content: str):
     init_memory_file()
+
+    # Szigorú Budapest időzóna, 2026-os év kikényszerítése, ha a rendszeróra rossz lenne
+    now = datetime.datetime.now(ZoneInfo("Europe/Budapest"))
+    if now.year != 2026:
+        now = now.replace(year=2026)
+
     entry = {
-        'timestamp': datetime.datetime.now().isoformat(),
+        'timestamp': now.isoformat(),
         'category': category,
         'content': content
     }
@@ -34,7 +41,10 @@ def write_memory(category: str, content: str):
 
 def mark_session(event: str):
     init_memory_file()
-    timestamp = datetime.datetime.now().isoformat()
+    now = datetime.datetime.now(ZoneInfo("Europe/Budapest"))
+    if now.year != 2026:
+        now = now.replace(year=2026)
+    timestamp = now.isoformat()
     entry = {'timestamp': timestamp, 'category': 'SESSION_MARKER', 'content': event}
     with open(MEMORY_FILE, 'a', encoding='utf-8') as f:
         f.write(json.dumps(entry) + '\n')
