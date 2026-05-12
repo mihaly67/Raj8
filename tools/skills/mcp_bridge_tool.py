@@ -18,6 +18,38 @@ def run_mcp_tool(tool_name, tool_args):
     args_json = json.dumps(tool_args)
     safe_args = shlex.quote(args_json)
     
+    if os.environ.get("VPS_PWD"):
+        if shutil.which("sshpass"):
+            server_params.command = "sshpass"
+            server_params.args = ["-p", os.environ.get("VPS_PWD"), "ssh"] + server_params.args
+        else:
+            print("⚠️ sshpass nem található, a jelszavas belépés nem fog működni! Próbálj kulcsot beállítani.", file=sys.stderr)
+            
+    elif os.environ.get("VPS_SSH_KEY"):
+        with open("temp_mcp_key", "w") as f:
+            f.write(os.environ.get("VPS_SSH_KEY") + "\n")
+        os.chmod("temp_mcp_key", 0o600)
+        server_params.args = ["-i", "temp_mcp_key"] + server_params.args
+
+    print(f"🔗 Csatlakozás a VPS MCP Szerverhez hivatalos MCP SDK-val...", file=sys.stderr)
+    
+    try:
+        async with stdio_client(server_params) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                
+                # Meghívjuk a toolt
+                result = await session.call_tool(tool_name, arguments=args_dict)
+                
+                outputs = []
+                if hasattr(result, "content"):
+                    for content in result.content:
+                        if content.type == "text":
+                            outputs.append(content.text)
+                return "\n".join(outputs)
+    finally:
+        if os.path.exists("temp_mcp_key"):
+            os.remove("temp_mcp_key")
     # Invoke the mcp cli on the VPS
     cmd = f"mcp call {tool_name} --args {safe_args}"
     success, output = run_on_vps(cmd)
